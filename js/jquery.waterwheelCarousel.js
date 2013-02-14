@@ -232,8 +232,8 @@
     function setupStarterRotation() {
       options.startingItem = (options.startingItem === 0) ? Math.round(data.totalItems / 2) : options.startingItem;
 
-      data.rightItemsCount = Math.ceil((data.totalItems-1) / 2);
-      data.leftItemsCount = Math.floor((data.totalItems-1) / 2);
+      data.rightItemsCount = options.circular ? Math.ceil((data.totalItems-1) / 2) : data.totalItems-1;
+      data.leftItemsCount = options.circular ? Math.floor((data.totalItems-1) / 2) : 0;
 
       // We are in effect rotating the carousel, so we need to set that
       data.carouselRotationsLeft = 1;
@@ -434,14 +434,16 @@
           }
           // We keep both sides as even as possible to allow circular rotation to work.
           // We will "wrap" the item arround to the other side by negating its current position
-          var flankingAllowance = (newPosition > 0) ? data.rightItemsCount : data.leftItemsCount;
-          if (Math.abs(newPosition) > flankingAllowance) {
-            newPosition = currentPosition * -1;
-            // If there's an uneven number of "flanking" items, we need to compenstate for that
-            // when we have an item switch sides. The right side will always have 1 more in that case
-            if (data.totalItems % 2 == 0) {
-              newPosition += 1;
-            } 
+          if (options.circular) {
+            var flankingAllowance = (newPosition > 0) ? data.rightItemsCount : data.leftItemsCount;
+            if (Math.abs(newPosition) > flankingAllowance) {
+              newPosition = currentPosition * -1;
+              // If there's an uneven number of "flanking" items, we need to compenstate for that
+              // when we have an item switch sides. The right side will always have 1 more in that case
+              if (data.totalItems % 2 == 0) {
+                newPosition += 1;
+              } 
+            }
           }
 
           moveItem($item, newPosition);
@@ -610,15 +612,16 @@
 
   $.fn.waterwheelCarousel.defaults = {
     // number tweeks to change apperance
-    startingItem:               1,   // item to place in the center of the carousel. Set to 0 for auto
-    separation:                 175, // distance between items in carousel
-    separationMultiplier:       0.6, // multipled by separation distance to increase/decrease distance for each additional item
-    horizonOffset:              0,   // offset each item from the "horizon" by this amount (causes arching)
-    horizonOffsetMultiplier:    1,   // multipled by horizon offset to increase/decrease offset for each additional item
-    sizeMultiplier:             0.7, // determines how drastically the size of each item changes
-    opacityMultiplier:          0.8, // determines how drastically the opacity of each item changes
-    horizon:                    0,   // how "far in" the horizontal/vertical horizon should be set from the container wall. 0 for auto
-    flankingItems:              3,   // the number of items visible on either side of the center
+    startingItem:               1,    // item to place in the center of the carousel. Set to 0 for auto
+    separation:                 175,  // distance between items in carousel
+    separationMultiplier:       0.6,  // multipled by separation distance to increase/decrease distance for each additional item
+    horizonOffset:              0,    // offset each item from the "horizon" by this amount (causes arching)
+    horizonOffsetMultiplier:    1,    // multipled by horizon offset to increase/decrease offset for each additional item
+    sizeMultiplier:             0.7,  // determines how drastically the size of each item changes
+    opacityMultiplier:          0.8,  // determines how drastically the opacity of each item changes
+    horizon:                    0,    // how "far in" the horizontal/vertical horizon should be set from the container wall. 0 for auto
+    flankingItems:              3,    // the number of items visible on either side of the center
+    circular:                   true, // items go around
 
     // animation
     speed:                      300,      // speed in milliseconds it will take to rotate from one to the next
