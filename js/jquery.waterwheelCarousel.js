@@ -509,7 +509,7 @@
 
     function nextItemFromCenter() {
       var $next = data.currentCenterItem.next();
-      if ($next.length <= 0) {
+      if ($next.length <= 0 && options.circular) {
         $next = data.currentCenterItem.parent().children().first();
       }
       return $next;
@@ -517,7 +517,7 @@
 
     function prevItemFromCenter() {
       var $prev = data.currentCenterItem.prev();
-      if ($prev.length <= 0) {
+      if ($prev.length <= 0 && options.circular) {
         $prev = data.currentCenterItem.parent().children().last();
       }
       return $prev;
@@ -528,7 +528,9 @@
      * the 'moving' callbacks
      */
     function moveOnce(direction) {
-      if (data.currentlyMoving === false) {
+      if (data.currentlyMoving === false &&
+          (direction == 'backward' || nextItemFromCenter().length != 0) &&
+          (direction == 'forward' || prevItemFromCenter().length != 0) ) {
         data.previousCenterItem = data.currentCenterItem;
 
         options.movingFromCenter(data.currentCenterItem);
@@ -539,9 +541,9 @@
           options.movingToCenter(nextItemFromCenter());
           data.currentDirection = 'forward';
         }
+        
+        rotateCarousel(1);
       }
-
-      rotateCarousel(1);
     }
     
     /**
