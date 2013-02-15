@@ -6,7 +6,7 @@
  * Copyright 2011-2013 Brian Osborne
  * Licensed under GPL version 3
  * http://www.gnu.org/licenses/gpl.txt
- * 
+ *
  * Plugin written by Brian Osborne
  * for use with the jQuery JavaScript Framework
  * http://www.jquery.com
@@ -230,10 +230,10 @@
      * figure out what items go where and will animate them there
      */
     function setupStarterRotation() {
-      options.startingItem = (options.startingItem === 0) ? Math.round(data.totalItems / 2) : options.startingItem;
+      options.startingItem = (options.startingItem === 0) ? (options.circular ? Math.round(data.totalItems / 2) : 1) : options.startingItem;
 
-      data.rightItemsCount = options.circular ? Math.ceil((data.totalItems-1) / 2) : data.totalItems-1;
-      data.leftItemsCount = options.circular ? Math.floor((data.totalItems-1) / 2) : 0;
+      data.rightItemsCount = options.circular ? Math.ceil((data.totalItems-1) / 2) : (data.totalItems - options.startingItem);
+      data.leftItemsCount = options.circular ? Math.floor((data.totalItems-1) / 2) : options.startingItem - 1;
 
       // We are in effect rotating the carousel, so we need to set that
       data.carouselRotationsLeft = 1;
@@ -411,7 +411,7 @@
         data.currentlyMoving = true;
         data.itemsAnimating = 0;
         data.carouselRotationsLeft += rotations;
-        
+
         if (options.quickerForFurther === true) {
           // Figure out how fast the carousel should rotate
           if (rotations > 1) {
@@ -442,7 +442,7 @@
               // when we have an item switch sides. The right side will always have 1 more in that case
               if (data.totalItems % 2 == 0) {
                 newPosition += 1;
-              } 
+              }
             }
           }
 
@@ -473,7 +473,7 @@
 
       // Remove autoplay
       autoPlay(true);
-      
+
       var rotations = Math.abs(itemPosition);
       if (itemPosition == 0) {
         options.clickedCenter($(this));
@@ -541,11 +541,11 @@
           options.movingToCenter(nextItemFromCenter());
           data.currentDirection = 'forward';
         }
-        
+
         rotateCarousel(1);
       }
     }
-    
+
     /**
      * Navigation with arrow keys
      */
@@ -593,7 +593,7 @@
         setupStarterRotation();
       });
     }
-    
+
     this.next = function() {
       autoPlay(true);
       options.autoPlay = 0;
@@ -629,7 +629,7 @@
     speed:                      300,      // speed in milliseconds it will take to rotate from one to the next
     animationEasing:            'linear', // the easing effect to use when animating
     quickerForFurther:          true,     // set to true to make animations faster when clicking an item that is far away from the center
-    
+
     // misc
     linkHandling:               2,                 // 1 to disable all (used for facebox), 2 to disable all but center (to link images out)
     autoPlay:                   0,                 // indicate the speed in milliseconds to wait before autorotating. 0 to turn off. Can be negative
@@ -637,7 +637,7 @@
     activeClassName:            'carousel-center', // the name of the class given to the current item in the center
     keyboardNav:                false,             // set to true to move the carousel with the arrow keys
     keyboardNavOverride:        true,              // set to true to override the normal functionality of the arrow keys (prevents scrolling)
- 
+
     // callback functions
     movingToCenter:             $.noop, // fired when an item is about to move to the center position
     movedToCenter:              $.noop, // fired when an item has finished moving to the center
